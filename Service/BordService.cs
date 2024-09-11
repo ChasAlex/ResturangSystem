@@ -62,8 +62,8 @@ namespace ResturangSystem.Service
 
             return availableBord.Select(b => new AvailableBokningDTO
             {
-                BordsNummer = b.Bordsnummer,
-                Datum = b.Bokningar?.Select(bokning => bokning.Datum).ToList() ?? new List<DateTime>()
+                BordsNummer = b.Bordsnummer
+                
             }).ToList();
         }
 
@@ -94,6 +94,12 @@ namespace ResturangSystem.Service
             };
             await _bordRepo.UpdateBordAsync(UpdatedBord);
 
+        }
+
+        public async Task<int> FindBordByBordsnummerAsync(int bordsnummer)
+        {
+            var bord = await _bordRepo.FindBordByBordsnummerAsync(bordsnummer);
+            return bord.BordId;
         }
     }
 }

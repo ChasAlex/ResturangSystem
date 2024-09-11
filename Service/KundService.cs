@@ -15,17 +15,18 @@ namespace ResturangSystem.Service
         } 
 
 
-        public async Task AddKundAsync(KundDTO kund)
+        public async Task<int> AddKundAsync(KundDTO kund)
         {
             var kundToAdd = new Kund
             {
-                KundId = kund.KundId,
+                
                 Namn = kund.Namn,
                 Email = kund.Email,
                 Bokningar = kund.Bokningar
             };
 
-            await _kundRepo.CreateKundAsync(kundToAdd);
+            var kundToReturn = await _kundRepo.CreateKundAsync(kundToAdd);
+            return kundToReturn.KundId;
 
         }
 
@@ -66,7 +67,7 @@ namespace ResturangSystem.Service
         {
             var kundToUpdate = new Kund
             {
-                KundId = kund.KundId,
+               
                 Namn = kund.Namn,
                 Email = kund.Email,
                 Bokningar = kund.Bokningar

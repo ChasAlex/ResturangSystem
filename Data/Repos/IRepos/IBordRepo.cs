@@ -11,5 +11,6 @@ namespace ResturangSystem.Data.Repos.IRepos
         Task<Bord> UpdateBordAsync(Bord bord);
         Task<Bord> DeleteBordAsync(int id);
         Task<List<Bord>> GetAvailableTablesAsync(AvailableTableDTO dto);
+        Task<Bord> FindBordByBordsnummerAsync(int bordsnummer);
     }
 }

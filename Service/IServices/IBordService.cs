@@ -11,6 +11,7 @@ namespace ResturangSystem.Service.IServices
         Task UpdateBordAsync(BordDTO bord);
         Task DeleteBordAsync(int id);
         Task<List<AvailableBokningDTO>> GetAvailableBordsAsync(AvailableTableDTO dto);
+        Task<int> FindBordByBordsnummerAsync(int bordsnummer);
 
 
     }

@@ -6,7 +6,7 @@ namespace ResturangSystem.Service.IServices
     {
         Task<IEnumerable<KundDTO>> GetAllKundAsync();
         Task<KundDTO> GetKundIdAsync(int id);
-        Task AddKundAsync(KundDTO kund);
+        Task<int> AddKundAsync(KundDTO kund);
         Task UpdateKundAsync(KundDTO kund);
         Task DeleteKundAsync(int id);
     }

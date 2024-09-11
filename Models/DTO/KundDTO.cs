@@ -2,7 +2,7 @@
 {
     public class KundDTO
     {
-        public int KundId { get; set; }
+        public int? KundId { get; set; }
         public string Namn { get; set; }
         public string Email { get; set; }
 

@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ResturangSystem.Models;
 using ResturangSystem.Models.DTO;
 using ResturangSystem.Service.IServices;
+using System.Runtime.CompilerServices;
 
 namespace ResturangSystem.Controllers
 {
@@ -10,10 +14,15 @@ namespace ResturangSystem.Controllers
     public class BokningController : ControllerBase
     {
         private readonly IBokningService _bokningService;
+        private readonly IKundService _kundService;
+        private readonly IBordService _bordService;
 
-        public BokningController(IBokningService bokningService)
+
+        public BokningController(IBokningService bokningService, IKundService kundService, IBordService bordService)
         {
             _bokningService = bokningService;
+            _kundService = kundService;
+            _bordService = bordService;
         }
 
         [HttpGet("/getAll")]
@@ -33,30 +42,43 @@ namespace ResturangSystem.Controllers
         [HttpGet("/get/{id}")]
         public async Task<IActionResult> GetBokning(int id)
         {
-            try
-            {
                 var bokning = await _bokningService.GetBokningIdAsync(id);
+                
+                if(bokning == null) { return NotFound(); }
                 return Ok(bokning);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
         }
 
         [HttpPost("/add")]
-        public async Task<IActionResult> CreateBokning(BokningDTO bokning)
+        public async Task<IActionResult> CreateBokning([FromBody]CreateBokningDTO dto)
         {
-            try
-            {
+            try {
+                // Skapa kund, returnera kundId
+                var kund = new KundDTO { Namn = dto.Name, Email = dto.Email };
+                var kundId = await _kundService.AddKundAsync(kund);
+
+
+                // Hitta bord Id från bord nummer
+                var bordId = await _bordService.FindBordByBordsnummerAsync(dto.Bordsnummer);
+
+
+                //Lägg till bokning
+                var bokning = new BokningDTO { Antal = dto.Antal, KundId = kundId, BordId = bordId, Datetime = dto.Datum };
                 await _bokningService.AddBokningAsync(bokning);
-                return Ok(bokning);
+
+                return Created();
+
+
+
             }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
+            catch (Exception e) { return StatusCode(StatusCodes.Status500InternalServerError, e.Message); }
+
+
+
+            
         }
+
+
+
 
         [HttpPut("/update")]
         public async Task<IActionResult> UpdateBokning(BokningDTO bokning)
@@ -71,6 +93,8 @@ namespace ResturangSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
+
+
 
         [HttpDelete("/delte/{id}")]
         public async Task<IActionResult> DeleteBokning(int id)

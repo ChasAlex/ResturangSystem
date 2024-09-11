@@ -76,7 +76,7 @@ namespace ResturangSystem.Data.Repos
             catch (Exception e)
             {
                 Console.WriteLine("Error - " + e);
-                return new List<Bord>();
+                return null;
             }
         }
 
@@ -100,6 +100,19 @@ namespace ResturangSystem.Data.Repos
                 _context.Bord.Update(bord);
                 await _context.SaveChangesAsync();
                 return bord;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error - " + e);
+                return null;
+            }
+        }
+
+        public async Task<Bord> FindBordByBordsnummerAsync(int bordsnummer)
+        {
+            try
+            {
+                return await _context.Bord.FirstOrDefaultAsync(b => b.Bordsnummer == bordsnummer);
             }
             catch (Exception e)
             {
