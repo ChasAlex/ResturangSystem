@@ -1,4 +1,5 @@
 ﻿using ResturangSystem.Models.DTO;
+using ResturangSystem.Models.Viewmodels;
 
 namespace ResturangSystem.Service.IServices
 {
@@ -6,8 +7,8 @@ namespace ResturangSystem.Service.IServices
     {
         Task<IEnumerable<BokningDTO>> GetAllBokningAsync();
         Task<BokningDTO> GetBokningIdAsync(int id);
-        Task AddBokningAsync(BokningDTO bok);
-        Task UpdateBokningAsync(BokningDTO bok);
+        Task<BokningDTO> AddBokningAsync(BokningDTO bok);
+        Task <BokningDTO> UpdateBokningAsync(UpdateBokningDTO bok);
         Task DeleteBokningAsync(int id);
         
         

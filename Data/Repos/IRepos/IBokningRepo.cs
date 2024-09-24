@@ -9,5 +9,6 @@ namespace ResturangSystem.Data.Repos.IRepos
         Task<Bokning> CreateBokningAsync(Bokning bokning);
         Task<Bokning> UpdateBokningAsync(Bokning bokning);
         Task<Bokning> DeleteBokningAsync(int id);
+        Task<Bokning> GetBokningPLUSAsync(int id);
     }
 }

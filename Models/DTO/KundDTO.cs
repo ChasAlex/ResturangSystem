@@ -6,6 +6,6 @@
         public string Namn { get; set; }
         public string Email { get; set; }
 
-        public ICollection<Bokning> Bokningar { get; set; } = new List<Bokning>();
+        public ICollection<Bokning>? Bokningar { get; set; } = new List<Bokning>();
     }
 }

@@ -1,16 +1,12 @@
 ﻿namespace ResturangSystem.Models.DTO
 {
-    public class CreateBokningDTO
+    public class UpdateBokningDTO
     {
-        public string Namn { get; set; }
-        public string Email { get; set; }
+        public int BokningId { get; set; }
         public int Antal { get; set; }
         public int Bordnummer { get; set; }
-
+        public string Namn { get; set; }
         public DateTime Datum { get; set; }
-         
-
-
-
+        
     }
 }

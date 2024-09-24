@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ResturangSystem.Models;
 using ResturangSystem.Models.DTO;
+using ResturangSystem.Models.Viewmodels;
 using ResturangSystem.Service.IServices;
 using System.Runtime.CompilerServices;
 
@@ -30,8 +31,30 @@ namespace ResturangSystem.Controllers
         {
             try
             {
+                var bokningToReturn = new List<ListAllBokningViewModel>();
                 var bokningar = await _bokningService.GetAllBokningAsync();
-                return Ok(bokningar);
+
+                foreach(var book in bokningar)
+                {   
+                    var kund = await _kundService.GetKundIdAsync(book.KundId);
+                    var bord = await _bordService.GetBordIdAsync(book.BordId);
+
+                    var bookingToadd = new ListAllBokningViewModel
+                    {   
+
+                        BokningId = book.BokningId,
+                        Antal = book.Antal,
+                        Namn = kund.Namn,
+                        Datum = DateOnly.FromDateTime(book.Datetime),
+                        BordNummer = bord.Bordsnummer
+                    };
+                    bokningToReturn.Add(bookingToadd);
+
+                }
+
+                
+
+                return Ok(bokningToReturn);
             }
             catch (Exception e)
             {
@@ -53,19 +76,27 @@ namespace ResturangSystem.Controllers
         {
             try {
                 // Skapa kund, returnera kundId
-                var kund = new KundDTO { Namn = dto.Name, Email = dto.Email };
+                var kund = new KundDTO { Namn = dto.Namn, Email = dto.Email };
                 var kundId = await _kundService.AddKundAsync(kund);
 
 
                 // Hitta bord Id från bord nummer
-                var bordId = await _bordService.FindBordByBordsnummerAsync(dto.Bordsnummer);
+                var bordId = await _bordService.FindBordByBordsnummerAsync(dto.Bordnummer);
 
 
                 //Lägg till bokning
                 var bokning = new BokningDTO { Antal = dto.Antal, KundId = kundId, BordId = bordId, Datetime = dto.Datum };
-                await _bokningService.AddBokningAsync(bokning);
+                var addedBookning = await _bokningService.AddBokningAsync(bokning);
 
-                return Created();
+                var bokningToReturn = new ListAllBokningViewModel
+                {
+                    BokningId = addedBookning.BokningId,
+                    Antal = addedBookning.Antal,
+                    Namn = dto.Namn,
+                    Datum = DateOnly.FromDateTime(addedBookning.Datetime),
+                    BordNummer = dto.Bordnummer
+                };
+                return Ok(bokningToReturn);
 
 
 
@@ -81,12 +112,22 @@ namespace ResturangSystem.Controllers
 
 
         [HttpPut("/update")]
-        public async Task<IActionResult> UpdateBokning(BokningDTO bokning)
+        public async Task<IActionResult> UpdateBokning([FromBody]UpdateBokningDTO bokning)
         {
             try
             {
-                await _bokningService.UpdateBokningAsync(bokning);
-                return Ok(bokning);
+                var result = await _bokningService.UpdateBokningAsync(bokning);
+
+                var resultToReturn = new ListAllBokningViewModel
+                {
+                    BokningId = result.BokningId,
+                    Antal = result.Antal,
+                    Namn = bokning.Namn,
+                    Datum = DateOnly.FromDateTime(result.Datetime),
+                    BordNummer = bokning.Bordnummer
+                };
+
+                return Ok(resultToReturn);
             }
             catch (Exception e)
             {

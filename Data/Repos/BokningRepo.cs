@@ -76,6 +76,19 @@ namespace ResturangSystem.Data.Repos
             }
         }
 
+        public async Task<Bokning> GetBokningPLUSAsync(int id)
+        {
+            try
+            {
+                return await _context.Bokning.Include(Bokning => Bokning.Bord).Include(Bokning => Bokning.Kund).FirstOrDefaultAsync(Bokning => Bokning.BokningId == id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error - " + e);
+                return null;
+            }
+        }
+
         public async Task<Bokning> UpdateBokningAsync(Bokning bokning)
         {
             try
